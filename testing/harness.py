@@ -11,7 +11,6 @@ The vvp file is expected at build/<name>.vvp (built by the Makefile).
 import os
 import subprocess
 import sys
-
 from collections.abc import Callable
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
