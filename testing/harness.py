@@ -12,10 +12,12 @@ import os
 import subprocess
 import sys
 
+from collections.abc import Callable
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-def run_test(name, check_line, vvp="vvp"):
+def run_test(name: str, check_line: Callable[[str], str | None], vvp: str = "vvp"):
     path = os.path.join(ROOT, "build", f"{name}.vvp")
     proc = subprocess.run([vvp, path], capture_output=True, text=True)
     if proc.returncode != 0:
@@ -24,9 +26,9 @@ def run_test(name, check_line, vvp="vvp"):
         sys.exit(1)
 
     lines = proc.stdout.splitlines()
-    errors = []
+    errors: list[str] = []
     for n, line in enumerate(lines, 1):
-        err = check_line(line)
+        err: str | None = check_line(line)
         if err:
             errors.append(f"line {n} ({line!r}): {err}")
 

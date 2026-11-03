@@ -1,14 +1,14 @@
 import math
 import re
 
-from harness import run_test
+from testing.harness import run_test
 
 ANGLE_BITS = 8
 OUT_BITS = 8
 PAT = re.compile(r"angle=(\d+) sin_val=(-?\d+) cos_val=(-?\d+)")
 
 
-def check_line(line):
+def check_line(line: str) -> str | None:
     m = PAT.search(line)
     if not m:
         return None
