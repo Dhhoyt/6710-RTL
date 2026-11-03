@@ -2,8 +2,8 @@
 
 module butterfly_unit #(
     parameter INTEGER_WIDTH = 8,
-    parameter DECIMAL_WIDTH = 8,                              // fractional bits
-    parameter BLOCK_POWER   = 8,                              // 2^BLOCK_POWER-point FFT
+    parameter DECIMAL_WIDTH = 8,                             // fractional bits
+    parameter BLOCK_POWER   = 8                              // 2^BLOCK_POWER-point FFT
 )(
     input  wire signed [WIDTH-1:0]  a_real,
     input  wire signed [WIDTH-1:0]  a_imag,
