@@ -1,41 +1,25 @@
-"""Checks sin_cos_lut_tb output (read from stdin) against a reference model."""
 import math
 import re
-import sys
+
+from harness import run_test
 
 ANGLE_BITS = 8
 OUT_BITS = 8
+PAT = re.compile(r"angle=(\d+) sin_val=(-?\d+) cos_val=(-?\d+)")
 
 
-def expected(angle):
+def check_line(line):
+    m = PAT.search(line)
+    if not m:
+        return None
+    angle, sin_got, cos_got = map(int, m.groups())
     amp = 2 ** (OUT_BITS - 1) - 1
     a = 2 * math.pi * angle / (1 << ANGLE_BITS)
-    return math.floor(math.sin(a) * amp + 0.5), math.floor(math.cos(a) * amp + 0.5)
+    sin_exp = math.floor(math.sin(a) * amp + 0.5)
+    cos_exp = math.floor(math.cos(a) * amp + 0.5)
+    # allow 1 LSB: table is built from rounded quarter-wave samples
+    if abs(sin_exp - sin_got) > 1 or abs(cos_exp - cos_got) > 1:
+        return f"expected sin={sin_exp} cos={cos_exp}"
 
 
-def main():
-    pat = re.compile(r"angle=(\d+) sin_val=(-?\d+) cos_val=(-?\d+)")
-    seen = {}
-    for line in sys.stdin:
-        m = pat.search(line)
-        if m:
-            seen[int(m[1])] = (int(m[2]), int(m[3]))
-
-    errors = []
-    for angle in range(1 << ANGLE_BITS):
-        if angle not in seen:
-            errors.append(f"angle {angle}: missing from output")
-            continue
-        exp, got = expected(angle), seen[angle]
-        # allow 1 LSB: table is built from rounded quarter-wave samples
-        if any(abs(e - g) > 1 for e, g in zip(exp, got)):
-            errors.append(f"angle {angle}: expected {exp}, got {got}")
-
-    for e in errors:
-        print("FAIL:", e)
-    print(f"sin_cos_lut: {'FAIL' if errors else 'PASS'} ({len(seen)} samples)")
-    sys.exit(1 if errors else 0)
-
-
-if __name__ == "__main__":
-    main()
+run_test("sin_cos_lut", check_line)

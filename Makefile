@@ -13,9 +13,9 @@ test: $(TESTS)
 $(BUILD)/sin_cos_lut.vvp: testing/sin_cos_lut_tb.v src/sin_cos_lut.v | $(BUILD)
 	$(IVERILOG) -g2012 -o $@ $^
 
-# One run rule per test: simulate, then verify output with the python harness
+# One run rule per test: the python script simulates and checks each output line
 sin_cos_lut: $(BUILD)/sin_cos_lut.vvp
-	$(VVP) $< | $(PYTHON) testing/test_sin_cos_lut.py
+	$(PYTHON) testing/test_sin_cos_lut.py
 
 $(BUILD):
 	mkdir -p $@
