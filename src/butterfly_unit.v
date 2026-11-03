@@ -3,8 +3,9 @@
 module butterfly_unit #(
     parameter INTEGER_WIDTH = 8,
     parameter DECIMAL_WIDTH = 8,                              // fractional bits
-    parameter BLOCK_POWER   = 8,                              // 2^BLOCK_POWER-point FFT
-)(
+    parameter BLOCK_POWER   = 8,
+    parameter WIDTH = INTEGER_WIDTH + DECIMAL_WIDTH
+) (
     input  wire signed [WIDTH-1:0]  a_real,
     input  wire signed [WIDTH-1:0]  a_imag,
     input  wire signed [WIDTH-1:0]  b_real,
@@ -16,14 +17,12 @@ module butterfly_unit #(
     output wire signed [WIDTH-1:0]  diff_imag
 );
 
-    localparam WIDTH = INTEGER_WIDTH + DECIMAL_WIDTH;
-
     wire signed [WIDTH-1:0] twiddle_real, twiddle_imag;
 
     sin_cos_lut #(
-        .ANGLE_RESOLUTION_BITS(BLOCK_POWER),
-        .LUT_OUTPUT_BITS      (WIDTH),
-        .FRACTION_BITS        (DECIMAL_WIDTH)
+        .ANGLE_RESOLUTION_BITS (BLOCK_POWER),
+        .LUT_OUTPUT_BITS       (WIDTH),
+        .ANGLE_RESOLUTION_BITS (DECIMAL_WIDTH)
     ) twiddle_lut (
         .angle  (angle),
         .sin_val(twiddle_imag),

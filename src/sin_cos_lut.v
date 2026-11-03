@@ -1,7 +1,7 @@
 module sin_cos_lut #(
     parameter ANGLE_RESOLUTION_BITS = 8,   // must be >= 3
     parameter LUT_OUTPUT_BITS       = 8
-)(
+) (
     input  wire [ANGLE_RESOLUTION_BITS-1:0] angle,
     output reg  [LUT_OUTPUT_BITS-1:0]       sin_val,   // two's complement
     output reg  [LUT_OUTPUT_BITS-1:0]       cos_val
