@@ -1,10 +1,10 @@
 `default_nettype none
 
 module butterfly_unit #(
-    parameter INTEGER_WIDTH = 8,
-    parameter DECIMAL_WIDTH = 8,                              // fractional bits
-    parameter BLOCK_POWER   = 8,
-    parameter WIDTH = INTEGER_WIDTH + DECIMAL_WIDTH
+    parameter integer INTEGER_WIDTH = 8,
+    parameter integer DECIMAL_WIDTH = 8,                              // fractional bits
+    parameter integer BLOCK_POWER   = 8,
+    parameter integer WIDTH = INTEGER_WIDTH + DECIMAL_WIDTH
 ) (
     input  wire signed [WIDTH-1:0]  a_real,
     input  wire signed [WIDTH-1:0]  a_imag,

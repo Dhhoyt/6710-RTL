@@ -1,9 +1,9 @@
 module sin_cos_lut_tb;
-    localparam ANGLE_RESOLUTION_BITS = 8;
-    localparam LUT_OUTPUT_BITS = 8;
-    
+    localparam integer ANGLE_RESOLUTION_BITS = 8;
+    localparam integer LUT_OUTPUT_BITS = 8;
+
     integer i; // 32-bit signed integer for loop iteration
-    
+
     reg  [ANGLE_RESOLUTION_BITS-1:0] angle;
     wire signed [LUT_OUTPUT_BITS-1:0]       sin_val, cos_val;
 
@@ -26,3 +26,4 @@ module sin_cos_lut_tb;
     end
 
 endmodule
+

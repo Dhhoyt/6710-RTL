@@ -1,15 +1,15 @@
 module sin_cos_lut #(
-    parameter ANGLE_RESOLUTION_BITS = 8,   // must be >= 3
-    parameter LUT_OUTPUT_BITS       = 8
+    parameter integer ANGLE_RESOLUTION_BITS = 8,   // must be >= 3
+    parameter integer LUT_OUTPUT_BITS       = 8
 ) (
     input  wire [ANGLE_RESOLUTION_BITS-1:0] angle,
     output reg  [LUT_OUTPUT_BITS-1:0]       sin_val,   // two's complement
     output reg  [LUT_OUTPUT_BITS-1:0]       cos_val
 );
 
-    localparam IDX_BITS = ANGLE_RESOLUTION_BITS - 2;
-    localparam LUT_SIZE = 1 << IDX_BITS;      // samples per quadrant
-    localparam ENTRIES  = LUT_SIZE + 1;       // +1 for the 90-degree peak
+    localparam integer IDX_BITS = ANGLE_RESOLUTION_BITS - 2;
+    localparam integer LUT_SIZE = 1 << IDX_BITS;      // samples per quadrant
+    localparam integer ENTRIES  = LUT_SIZE + 1;       // +1 for the 90-degree peak
 
     function automatic [ENTRIES*LUT_OUTPUT_BITS-1:0] generate_lut;
         input integer unused;
@@ -26,7 +26,7 @@ module sin_cos_lut #(
         end
     endfunction
 
-    localparam [ENTRIES*LUT_OUTPUT_BITS-1:0] LUT = generate_lut(0);
+    localparam integer [ENTRIES*LUT_OUTPUT_BITS-1:0] LUT = generate_lut(0);
 
     wire [1:0]          quadrant = angle[ANGLE_RESOLUTION_BITS-1 -: 2];
     wire [IDX_BITS-1:0] idx      = angle[IDX_BITS-1:0];
@@ -44,3 +44,4 @@ module sin_cos_lut #(
         endcase
     end
 endmodule
+
