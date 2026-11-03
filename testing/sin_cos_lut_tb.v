@@ -1,8 +1,11 @@
 module sin_cos_lut_tb;
     localparam ANGLE_RESOLUTION_BITS = 8;
     localparam LUT_OUTPUT_BITS = 8;
+    
+    integer i; // 32-bit signed integer for loop iteration
+    
     reg  [ANGLE_RESOLUTION_BITS-1:0] angle;
-    wire [LUT_OUTPUT_BITS-1:0]       sin_val, cos_val;
+    wire signed [LUT_OUTPUT_BITS-1:0]       sin_val, cos_val;
 
     sin_cos_lut #(
         .ANGLE_RESOLUTION_BITS(ANGLE_RESOLUTION_BITS),
@@ -14,7 +17,8 @@ module sin_cos_lut_tb;
     );
 
     initial begin
-        for (angle = 0; angle < (1 << ANGLE_RESOLUTION_BITS); angle = angle + 1) begin
+        for (i = 0; i < (1 << ANGLE_RESOLUTION_BITS); i = i + 1) begin
+            angle = i[ANGLE_RESOLUTION_BITS-1:0];
             #1;
             $display("angle=%0d sin_val=%0d cos_val=%0d", angle, sin_val, cos_val);
         end
