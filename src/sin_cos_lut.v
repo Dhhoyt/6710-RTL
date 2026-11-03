@@ -25,7 +25,7 @@ module sin_cos_lut #(
     end
   endfunction
 
-  localparam integer [ENTRIES*LUT_OUTPUT_BITS-1:0] LUT = generate_lut(0);
+  localparam [ENTRIES*LUT_OUTPUT_BITS-1:0] LUT = generate_lut(0);
 
   wire [                1:0] quadrant = angle[ANGLE_RESOLUTION_BITS-1-:2];
   wire [       IDX_BITS-1:0] idx = angle[IDX_BITS-1:0];

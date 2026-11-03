@@ -1,7 +1,7 @@
 import math
 import re
 
-from testing.harness import run_test
+from harness import run_test
 
 ANGLE_BITS = 8
 OUT_BITS = 8
