@@ -1,5 +1,5 @@
 module controller # (
-    parameter BLOCK_SIZE_POWER = 8
+    parameter integer BLOCK_SIZE_POWER = 8
 ) (
     input  wire clk,
     input  wire rst,
@@ -13,10 +13,10 @@ module controller # (
     output reg output_ready
 );
 
-    localparam IDLE = 2'b00;
-    localparam INPUT = 2'b01;
-    localparam OUTPUT = 2'b10;
-    localparam PROCESS = 2'b11;
+    localparam integer IDLE = 2'b00;
+    localparam integer INPUT = 2'b01;
+    localparam integer OUTPUT = 2'b10;
+    localparam integer PROCESS = 2'b11;
 
     reg [1:0] main_state;
     reg [1:0] next_main_state;
@@ -32,7 +32,7 @@ module controller # (
             main_state <= next_main_state;
     end
 
-    always @(*) begin
+    always_comb begin
         a_write_enable = 0;
         b_write_enable = 0;
         mem_write_enable = 0;
@@ -43,3 +43,4 @@ module controller # (
     end
 
 endmodule
+

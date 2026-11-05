@@ -27,3 +27,4 @@ module mux4 #(
                (sel == 2'b10) ? c : d;
 
 endmodule
+
