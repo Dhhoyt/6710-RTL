@@ -9,12 +9,12 @@ WIDTH = INTEGER_BITS + DECIMAL_BITS
 PAT = re.compile(r"a=(-?\d+) b=(-?\d+) result=(-?\d+)")
 
 
-def wrap_signed(x, bits):
+def wrap_signed(x: int, bits: int) -> int:
     x &= (1 << bits) - 1
     return x - (1 << bits) if x >> (bits - 1) else x
 
 
-def check_line(line):
+def check_line(line: str) -> str | None:
     m = PAT.match(line)
     if not m:
         return None

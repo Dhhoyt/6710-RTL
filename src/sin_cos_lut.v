@@ -25,7 +25,7 @@ module sin_cos_lut #(
     end
   endfunction
 
-  localparam integer [ENTRIES*LUT_OUTPUT_BITS-1:0] LUT = generate_lut(0);
+  localparam logic [ENTRIES*LUT_OUTPUT_BITS-1:0] LUT = generate_lut(0);
 
   wire [                1:0] quadrant = angle[ANGLE_RESOLUTION_BITS-1-:2];
   wire [       IDX_BITS-1:0] idx = angle[IDX_BITS-1:0];
@@ -34,7 +34,7 @@ module sin_cos_lut #(
   wire [LUT_OUTPUT_BITS-1:0] direct = LUT[idx*LUT_OUTPUT_BITS+:LUT_OUTPUT_BITS];  // S(x)
   wire [LUT_OUTPUT_BITS-1:0] mirror = LUT[idx_mir*LUT_OUTPUT_BITS+:LUT_OUTPUT_BITS];  // S(90-x)
 
-  always @* begin
+  always_comb begin
     case (quadrant)
       2'd0: begin
         sin_val = direct;
@@ -52,6 +52,12 @@ module sin_cos_lut #(
         sin_val = -mirror;
         cos_val = direct;
       end  // 270-360
+
+      // unreachable
+      default: begin
+        sin_val = 0;
+        cos_val = 0;
+      end
     endcase
   end
 endmodule
