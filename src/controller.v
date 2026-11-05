@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 module controller # (
     parameter integer BLOCK_SIZE_POWER = 8,
     parameter integer BLOCK_SIZE = 1 << BLOCK_SIZE_POWER
@@ -9,6 +10,15 @@ module controller # (
     input  wire input_buffer_full, // If the 16 bit input buffer is and ready to be placed into memory
     input  wire output_buffer_empty, // If the 16 bit output buffer is empty and ready to receive data
     output reg send_output,
+=======
+module controller #(
+    parameter integer BLOCK_SIZE_POWER = 8
+) (
+    input wire clk,
+    input wire rst,
+    input wire begin_input,
+    input wire begin_output,
+>>>>>>> 519e41fd01a7b2867b88ce2600584c0da26c8df7
     output reg a_write_enable,
     output reg b_write_enable,
     output reg [BLOCK_SIZE_POWER:0] address, // Stores twice the block size to store both real and imaginary parts
@@ -18,6 +28,7 @@ module controller # (
     output reg [2:0] mem_input_source
 );
 
+<<<<<<< HEAD
     localparam integer IDLE = 4'b0000; // Waiting for data for next calculation
     localparam integer INPUT = 4'b0001; // In the process of receiving input data
     localparam integer OUTPUT = 4'b0010; // In the process of sending output data
@@ -129,6 +140,33 @@ module controller # (
             end
         endcase
     end
+=======
+  localparam integer IDLE = 2'b00;
+  localparam integer INPUT = 2'b01;
+  localparam integer OUTPUT = 2'b10;
+  localparam integer PROCESS = 2'b11;
+
+  reg [1:0] main_state;
+  reg [1:0] next_main_state;
+
+  reg [BLOCK_SIZE_POWER-2:0] inner_counter;
+  reg [$clog2(BLOCK_SIZE)-1:0] stage_counter;
+
+  always @(posedge clk) begin
+    if (rst) main_state <= IDLE;
+    else main_state <= next_main_state;
+  end
+
+  always_comb begin
+    a_write_enable = 0;
+    b_write_enable = 0;
+    mem_write_enable = 0;
+    input_ready = 0;
+    output_ready = 0;
+    address = 0;
+
+  end
+>>>>>>> 519e41fd01a7b2867b88ce2600584c0da26c8df7
 
 endmodule
 
