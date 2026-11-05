@@ -15,6 +15,10 @@ from collections.abc import Callable
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+RED = "\033[31m"
+GREEN = "\033[32m"
+RESET = "\033[0m"
+
 
 def run_test(name: str, check_line: Callable[[str], str | None], vvp: str = "vvp"):
     path = os.path.join(ROOT, "build", f"{name}.vvp")
@@ -33,5 +37,5 @@ def run_test(name: str, check_line: Callable[[str], str | None], vvp: str = "vvp
 
     for e in errors:
         print("FAIL:", e)
-    print(f"{name}: {'FAIL' if errors else 'PASS'} ({len(lines)} lines, {len(errors)} errors)")
+    print(f"{name}: {RED + 'FAIL' if errors else GREEN + 'PASS'} ({len(lines)} lines, {len(errors)} errors)" + RESET)
     sys.exit(1 if errors else 0)
