@@ -2,7 +2,6 @@ import re
 
 from harness import run_test
 
-
 BLOCK_POWER: int = 8
 PAT = re.compile(r"pair=(\d+) stage=(\d+) angle=(\d+) top=(\d+) bot=(\d+)")
 
