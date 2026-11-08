@@ -1,5 +1,10 @@
-BLOCK_POWER: int = 4
-BLOCK_SIZE: int = 1 << BLOCK_POWER
+import re
+
+from harness import run_test
+
+
+BLOCK_POWER: int = 8
+PAT = re.compile(r"pair=(\d+) stage=(\d+) angle=(\d+) top=(\d+) bot=(\d+)")
 
 def reverse_bits(value: int, width: int) -> int:
     """Reverse exactly ``width`` low-order bits of ``value``."""
@@ -15,29 +20,22 @@ def find_idx(stage: int, pair: int) -> tuple[int, int, int]:
     upper_pair_bits = pair >> stage
     top = (lower_pair_bits << (BLOCK_POWER - stage)) | upper_pair_bits
     bottom = top | (1 << stage_inv)
-    angle = (pair << stage_inv) & ((1 << (BLOCK_POWER - 1)) - 1);
+    angle = (pair << stage_inv) & ((1 << (BLOCK_POWER - 1)) - 1)
     return top, bottom, angle
 
-for stage in range(BLOCK_POWER):
-    print(f"stage: {stage}")
-    for pair in range(BLOCK_SIZE // 2):
-        top, bottom, angle = find_idx(stage, pair)
-        print(f"({top}, {bottom}) with angle {angle}")
+def check_line(line: str) -> str | None:
+    match = PAT.fullmatch(line)
+    if match is None:
+        return None
+
+    pair, stage, angle, top, bottom = map(int, match.groups())
+    expected_top, expected_bottom, expected_angle = find_idx(stage, pair)
+    if (top, bottom, angle) != (expected_top, expected_bottom, expected_angle):
+        return (
+            f"pair={pair}, stage={stage}: expected "
+            f"top={expected_top} bot={expected_bottom} angle={expected_angle}; "
+            f"got top={top} bot={bottom} angle={angle}"
+        )
 
 
-# expected:
-# stage: 0
-# (0, 4) with angle 0
-# (1, 5) with angle 0
-# (2, 6) with angle 0
-# (3, 7) with angle 0
-# stage: 1
-# (0, 2) with angle 0
-# (4, 6) with angle 2
-# (1, 3) with angle 0
-# (5, 7) with angle 2
-# stage: 2
-# (0, 1) with angle 0
-# (4, 5) with angle 1
-# (2, 3) with angle 2
-# (6, 7) with angle 3
+run_test("transform_indexer", check_line)
