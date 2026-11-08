@@ -12,6 +12,7 @@ module transform_indexer #(
   assign stage_in = BLOCK_SIZE_POWER - stage - 1;
   assign top = ((pair >> stage_in) << (stage_in + 1)) | (pair & ((1 << stage_in) - 1));
   assign bot = top | (1 << stage);
+  assign angle = (pair << stage_in) & ((1 << (BLOCK_SIZE_POWER - 1)) - 1);
 
 endmodule
 
