@@ -1,3 +1,4 @@
+// encodes the function exp(-2pi * i * angle) and gets the sin/cos of that
 module sin_cos_lut #(
     parameter integer ANGLE_RESOLUTION_BITS = 8,  // must be >= 3
     parameter integer LUT_OUTPUT_BITS       = 8
