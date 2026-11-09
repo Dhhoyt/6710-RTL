@@ -21,8 +21,7 @@ module butterfly_unit #(
 
   sin_cos_lut #(
       .ANGLE_RESOLUTION_BITS(BLOCK_POWER),
-      .LUT_OUTPUT_BITS      (WIDTH),
-      .ANGLE_RESOLUTION_BITS(DECIMAL_WIDTH)
+      .LUT_OUTPUT_BITS(WIDTH)
   ) twiddle_lut (
       .angle  (angle),
       .sin_val(twiddle_imag),
@@ -31,33 +30,34 @@ module butterfly_unit #(
 
   wire signed [WIDTH-1:0] q_first, q_outside, q_inside, q_final;
 
+  // LUT coefficients use Q1.(WIDTH-1), independent of the sample binary point.
   fixed_point_multiply #(
-      .INTEGER_WIDTH(INTEGER_WIDTH),
-      .DECIMAL_WIDTH(DECIMAL_WIDTH)
+      .INTEGER_WIDTH(1),
+      .DECIMAL_WIDTH(WIDTH - 1)
   ) fp_mult_first (
       .a(b_real),
       .b(twiddle_real),
       .result(q_first)
   );
   fixed_point_multiply #(
-      .INTEGER_WIDTH(INTEGER_WIDTH),
-      .DECIMAL_WIDTH(DECIMAL_WIDTH)
+      .INTEGER_WIDTH(1),
+      .DECIMAL_WIDTH(WIDTH - 1)
   ) fp_mult_outside (
       .a(b_real),
       .b(twiddle_imag),
       .result(q_outside)
   );
   fixed_point_multiply #(
-      .INTEGER_WIDTH(INTEGER_WIDTH),
-      .DECIMAL_WIDTH(DECIMAL_WIDTH)
+      .INTEGER_WIDTH(1),
+      .DECIMAL_WIDTH(WIDTH - 1)
   ) fp_mult_inside (
       .a(b_imag),
       .b(twiddle_real),
       .result(q_inside)
   );
   fixed_point_multiply #(
-      .INTEGER_WIDTH(INTEGER_WIDTH),
-      .DECIMAL_WIDTH(DECIMAL_WIDTH)
+      .INTEGER_WIDTH(1),
+      .DECIMAL_WIDTH(WIDTH - 1)
   ) fp_mult_final (
       .a(b_imag),
       .b(twiddle_imag),

@@ -15,7 +15,7 @@ def check_line(line: str) -> str | None:
     angle, sin_got, cos_got = map(int, m.groups())
     amp = 2 ** (OUT_BITS - 1) - 1
     a = 2 * math.pi * angle / (1 << ANGLE_BITS)
-    sin_exp = math.floor(math.sin(a) * amp + 0.5)
+    sin_exp = math.floor(-math.sin(a) * amp + 0.5)
     cos_exp = math.floor(math.cos(a) * amp + 0.5)
     # allow 1 LSB: table is built from rounded quarter-wave samples
     if abs(sin_exp - sin_got) > 1 or abs(cos_exp - cos_got) > 1:

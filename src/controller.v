@@ -73,11 +73,11 @@ module controller #(
         .BLOCK_SIZE_POWER(BLOCK_SIZE_POWER),
         .BLOCK_SIZE(BLOCK_SIZE)
     ) transform_idx (
-        .inner_counter(inner_counter),
-        .stage_counter(stage_counter),
+        .pair(inner_counter),
+        .stage(stage_counter),
         .angle(angle),
-        .idx1(idx1),
-        .idx2(idx2)
+        .top(idx1),
+        .bot(idx2)
     );
 
     always @(posedge clk) begin

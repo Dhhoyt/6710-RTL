@@ -24,8 +24,7 @@ module controller_tb;
     integer stage;
     integer butterfly;
     integer operation;
-    integer group_index;
-    integer within_group;
+    integer reversed_stage_pair_bits;
     integer idx1_expected;
     integer idx2_expected;
     integer angle_expected;
@@ -92,16 +91,20 @@ module controller_tb;
 
         for (stage = 0; stage < POWER; stage = stage + 1) begin
             for (butterfly = 0; butterfly < SIZE / 2; butterfly = butterfly + 1) begin
-                group_index = butterfly >> stage;
-                within_group = butterfly & ((1 << stage) - 1);
-                idx1_expected = (group_index << (stage + 1)) | within_group;
-                idx2_expected = idx1_expected + (1 << stage);
-                angle_expected = within_group << (POWER - stage - 1);
+                reversed_stage_pair_bits = 0;
+                for (bit_index = 0; bit_index < stage; bit_index = bit_index + 1)
+                    reversed_stage_pair_bits = (reversed_stage_pair_bits << 1) |
+                        ((butterfly >> bit_index) & 1);
+                idx1_expected = (reversed_stage_pair_bits << (POWER - stage)) |
+                    (butterfly >> stage);
+                idx2_expected = idx1_expected | (1 << (POWER - stage - 1));
+                angle_expected = (butterfly << (POWER - stage - 1)) & ((SIZE / 2) - 1);
 
                 for (operation = 0; operation < 8; operation = operation + 1) begin
                     #1;
                     if (angle != angle_expected)
-                        $fatal(1, "wrong twiddle angle at stage %0d butterfly %0d", stage, butterfly);
+                        $fatal(1, "wrong twiddle angle at stage %0d butterfly %0d",
+                            stage, butterfly);
                     case (operation)
                         0: if (!a_write_enable || b_write_enable || mem_write_enable || address != idx1_expected * 2)
                             $fatal(1, "wrong A real load at stage %0d butterfly %0d", stage, butterfly);

@@ -1,3 +1,4 @@
+// Encodes exp(-2*pi*j*angle / 2^ANGLE_RESOLUTION_BITS).
 module sin_cos_lut #(
     parameter integer ANGLE_RESOLUTION_BITS = 8,  // must be >= 3
     parameter integer LUT_OUTPUT_BITS       = 8
@@ -37,19 +38,19 @@ module sin_cos_lut #(
   always_comb begin
     case (quadrant)
       2'd0: begin
-        sin_val = direct;
+        sin_val = -direct;
         cos_val = mirror;
       end  // 0-90
       2'd1: begin
-        sin_val = mirror;
+        sin_val = -mirror;
         cos_val = -direct;
       end  // 90-180
       2'd2: begin
-        sin_val = -direct;
+        sin_val = direct;
         cos_val = -mirror;
       end  // 180-270
       2'd3: begin
-        sin_val = -mirror;
+        sin_val = mirror;
         cos_val = direct;
       end  // 270-360
 
@@ -61,4 +62,3 @@ module sin_cos_lut #(
     endcase
   end
 endmodule
-
