@@ -12,28 +12,25 @@ module sin_cos_lut #(
   localparam integer LUT_SIZE = 1 << IDX_BITS;              // samples per quadrant
   localparam integer ENTRIES  = LUT_SIZE + 1;               // +1 for the 90-degree peak
 
-  function automatic [ENTRIES*LUT_OUTPUT_BITS-1:0] generate_lut;
-    input integer unused;
-    integer i;
-    real amplitude, a;
-    begin
-      amplitude    = (2.0 ** (LUT_OUTPUT_BITS-1)) - 1.0;
-      generate_lut = 0;
-      for (i = 0; i < ENTRIES; i = i + 1) begin
-        a = 6.283185307179586 * i / (4.0 * LUT_SIZE);  // 2*pi*i / 2^N
-        generate_lut[i*LUT_OUTPUT_BITS+:LUT_OUTPUT_BITS] = $rtoi($floor($sin(a) * amplitude + 0.5));
-      end
-    end
-  endfunction
-
-  localparam logic [ENTRIES*LUT_OUTPUT_BITS-1:0] LUT = generate_lut(0);
+  // Q1.15 sine values for 0 through pi/2, inclusive.  A literal ROM is
+  // accepted by both ModelSim and synthesis; the output is rescaled below.
+  localparam logic [1039:0] LUT_Q15 = 1040'h7fff7ff57fd87fa67f617f097e9c7e1d7d897ce37c297b5c7a7c79897884776b7641750473b5725470e26f5e6dc96c236a6d68a666cf64e862f160eb5ed75cb35a82584255f5539b51334ebf4c3f49b4471c447a41ce3f173c56398c36ba33df30fb2e112b1f2826252822231f1a1c0b18f915e212c80fab0c8c096a064803240000;
 
   wire [                1:0] quadrant = angle[ANGLE_RESOLUTION_BITS-1-:2];
   wire [       IDX_BITS-1:0] idx = angle[IDX_BITS-1:0];
   wire [         IDX_BITS:0] idx_mir = LUT_SIZE - idx;  // ranges 1..LUT_SIZE
 
-  wire [LUT_OUTPUT_BITS-1:0] direct = LUT[idx*LUT_OUTPUT_BITS+:LUT_OUTPUT_BITS];  // S(x)
-  wire [LUT_OUTPUT_BITS-1:0] mirror = LUT[idx_mir*LUT_OUTPUT_BITS+:LUT_OUTPUT_BITS];  // S(90-x)
+  // The literal table is sampled at 8-bit angle resolution.  Smaller FFTs
+  // select the corresponding subset of those samples (for example, an
+  // 8-point FFT uses indices 0, 32, and 64 for 0, 45, and 90 degrees).
+  wire [6:0] direct_index = idx << (8 - ANGLE_RESOLUTION_BITS);
+  wire [6:0] mirror_index = idx_mir << (8 - ANGLE_RESOLUTION_BITS);
+  wire [15:0] direct_q15 = LUT_Q15[direct_index*16+:16];
+  wire [15:0] mirror_q15 = LUT_Q15[mirror_index*16+:16];
+  wire [LUT_OUTPUT_BITS-1:0] direct =
+      (direct_q15 * ((1 << (LUT_OUTPUT_BITS-1)) - 1) + 16383) / 32767;
+  wire [LUT_OUTPUT_BITS-1:0] mirror =
+      (mirror_q15 * ((1 << (LUT_OUTPUT_BITS-1)) - 1) + 16383) / 32767;
 
   always_comb begin
     case (quadrant)
