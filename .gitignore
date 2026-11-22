@@ -3,3 +3,5 @@ a.out
 *.vcd
 build/
 testing/__pycache__/
+work/
+vsim.wlf
