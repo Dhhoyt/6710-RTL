@@ -12,7 +12,7 @@ puts "Hostname : [info hostname]"
 ##############################################################################
 
 
-set DESIGN DESIGN_NAME<>
+set DESIGN fft
 set GEN_EFF medium
 set MAP_OPT_EFF high
 set DATE [clock format [clock seconds] -format "%b%d-%T"] 
@@ -59,7 +59,7 @@ set_db / .lp_insert_clock_gating false
 ####################################################################
 
 
-read_hdl { <HDL_FILES>} 
+read_hdl -sv { ../src/fixed_point_multiply.v ../src/dff.v ../src/mux.v ../src/sin_cos_lut.v ../src/transform_indexer.v ../src/butterfly_unit.v ../src/controller.v ../src/fft.v }
 
 elaborate $DESIGN
 puts "Runtime & Memory after 'read_hdl'"
@@ -73,7 +73,7 @@ check_design -unresolved
 ## Constraints Setup
 ####################################################################
 
-read_sdc ./SDC/soc_top.sdc
+read_sdc ./SDC/fft.sdc
 puts "The number of exceptions is [llength [vfind "design:$DESIGN" -exception *]]"
 
 
