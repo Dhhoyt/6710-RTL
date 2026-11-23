@@ -64,9 +64,15 @@ In the ModelSim Transcript pane, run:
 
 The script compiles the RTL and fft_gate_tb, starts the simulation, and adds
 the concise interface and self-checking signals to the Wave window. Enter
-245 us in the Run Length field and click Run. Then select Wave > Zoom > Zoom
-Full. For a readable screenshot, zoom into roughly 164 us through 166 us,
-where serialized output data is active.
+246 us in the Run Length field and click Run. The test completes at about
+245.83 us, then prints its PASS message in the Transcript.
+
+Select Wave > Zoom > Zoom Full to review the entire transaction. At this
+scale, the clock and serial input are compressed and can appear solid. For a
+readable screenshot, use the zoom-range tool to select roughly 164 us through
+166 us, where serialized output data is active. During a word transfer,
+received_word can show a partial word while expected_word still holds the
+previous completed word; that is expected, not a mismatch.
 
 The testbench sends x[0] = 1.0 + j0, verifies all 512 serialized output
 words, and prints a PASS line when the RTL is correct.
@@ -93,7 +99,9 @@ required behavioral standard-cell models from:
 
     /research/ece/lnis-teaching/Designkits/tsmc180nm/full_custom_lib/verilog/sclib_tsmc180.v
 
-Run for 245 us and capture the same 164 us through 166 us output interval.
+Run for 246 us and capture the same 164 us through 166 us output interval.
+Confirm the FFT_GATE_TEST_PASS message appears in the Transcript before
+taking the screenshot.
 Do not add the full gate hierarchy recursively to the Wave window; the helper
 script already adds the top-level transaction and checker signals needed for a
 legible capture. The proprietary PDK library itself must not be copied into
